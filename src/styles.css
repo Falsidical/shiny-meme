@@ -9,3 +9,44 @@ body {
   color: #eee;
   font-family: system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
+
+main {
+  padding: 32px;
+}
+
+main > h2 {
+  margin: 16px auto;
+}
+
+.projects {
+  display: flex;
+  gap: 16px;
+
+  p {
+    background-color: #333;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+    &.active {
+      border-color: white;
+    }
+  }
+
+  #new-project-btn {
+    border: 1px dashed rgba(255, 255, 255, 0.466);
+  }
+}
+
+.notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min-content, 400px));
+  gap: 16px;
+  div {
+    padding: 16px;
+    background-color: #333;
+    border-radius: 8px;
+    border: 1px solid grey;
+  }
+}
