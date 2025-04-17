@@ -6,15 +6,34 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="root">
-      <main>
-        <h2>Projects</h2>
-        <div class="projects">
-          <p id="new-project-btn">New Project</p>
+    <dialog class="new-note-dialog">
+      <form class="new-note-form">
+        <h2>New Note</h2>
+        <label for="title">Note Title</label>
+        <input type="text" name="title" id="title" required />
+        <label for="content">Note Content</label>
+        <input type="text" name="content" id="content" required />
+        <div>
+          <button type="submit">Create</button>
+          <button type="button" class="close-note-dialog">Close</button>
         </div>
-        <h2>Notes</h2>
+      </form>
+    </dialog>
+    <div class="app-container">
+      <div class="sidemenu">
+        <div class="project-menu">
+          <h2>Projects</h2>
+          <button id="new-project-btn" type="button">+</button>
+        </div>
+        <div class="projects"></div>
+      </div>
+      <div class="notes-container">
+        <div class="notes-menu">
+          <h2>Notes</h2>
+          <button id="new-note-btn" type="button">New Note</button>
+        </div>
         <div class="notes"></div>
-      </main>
+      </div>
     </div>
   </body>
 </html>

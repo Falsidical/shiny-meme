@@ -4,3 +4,11 @@ export class Note {
     this.content = content;
   }
 }
+
+export class ToDoNote extends Note {
+  constructor(title, content, dueDate, priority) {
+    super(title, content);
+    this.dueDate = dueDate;
+    this.priority = priority;
+  }
+}
