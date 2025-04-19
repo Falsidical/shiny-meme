@@ -26,6 +26,26 @@ dialog {
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+    .buttons {
+      margin-top: 16px;
+      gap: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button {
+      background-color: #222;
+      border: 1px solid white;
+      color: #eee;
+      padding: 4px 16px;
+      flex: 1;
+
+      &:hover {
+        background-color: #333;
+        cursor: pointer;
+      }
+    }
   }
 }
 
@@ -101,4 +121,8 @@ dialog {
     border-radius: 8px;
     border: 1px solid grey;
   }
+}
+
+.done {
+  text-decoration: line-through;
 }

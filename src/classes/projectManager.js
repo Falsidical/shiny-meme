@@ -1,9 +1,11 @@
 import { Project } from './project.js';
 import { Note } from './note.js';
+import { restoreProjects } from '../dataController.js';
 
 class ProjectManager {
   constructor() {
     this.projects = [];
+    console.log(restoreProjects());
   }
 
   addProject(project) {
@@ -16,6 +18,8 @@ class ProjectManager {
 }
 
 export const projectManager = new ProjectManager();
+//projectManager.projects = restoreProjects();
+//console.log(projectManager.projects);
 
 projectManager.addProject(new Project('Default'));
 projectManager.addProject(new Project('Project One'));

@@ -1,5 +1,6 @@
 import { projectManager } from './projectManager';
-import { Note } from './note';
+import { saveProjects } from '../dataController';
+import { ToDoNote } from './note';
 
 export class UI {
   constructor() {
@@ -8,32 +9,18 @@ export class UI {
     this.notesContainer = document.querySelector('.notes');
     this.newProjectBtn = document.querySelector('#new-project-btn');
     this.newNoteBtn = document.querySelector('#new-note-btn');
-    this.noteDialog = document.querySelector('.new-note-dialog');
-    this.newNoteForm = document.querySelector('.new-note-form');
-    this.claseNoteDialog = document.querySelector('.close-note-dialog');
+    this.dialog = document.querySelector('dialog');
 
     this.newProjectBtn.addEventListener('click', () => {
       this.createProject();
       this.renderProjects();
     });
 
-    this.newNoteForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(this.newNoteForm);
-      const title = formData.get('title');
-      const content = formData.get('content');
-      const newNote = new Note(title, content);
-      projectManager.projects[this.activeProjectIndex].addNote(newNote);
-      this.noteDialog.close();
-      this.renderNotes();
-    });
-
     this.newNoteBtn.addEventListener('click', () => {
-      this.noteDialog.show();
-    });
+      this.clearDialog();
+      this.createToDoNoteForm();
 
-    this.claseNoteDialog.addEventListener('click', () => {
-      this.noteDialog.close();
+      this.dialog.show();
     });
   }
 
@@ -56,11 +43,40 @@ export class UI {
     this.clearNotes();
     projectManager.projects[this.activeProjectIndex].notes.forEach((note) => {
       const noteContainer = document.createElement('div');
+
       const noteTitle = document.createElement('h2');
       noteTitle.textContent = note.title;
+      noteContainer.appendChild(noteTitle);
+
+      if (note.dueDate) {
+        const dueDate = document.createElement('p');
+        dueDate.innerText = `Due Date: ${note.dueDate.toLocaleString()}`;
+        noteContainer.appendChild(dueDate);
+      }
+
       const noteContent = document.createElement('p');
       noteContent.textContent = note.content;
-      noteContainer.appendChild(noteTitle);
+
+      if (note.isDone !== undefined) {
+        const doneLabel = document.createElement('label');
+        doneLabel.innerText = 'isDone';
+        doneLabel.setAttribute('for', 'isDone');
+        noteContainer.appendChild(doneLabel);
+
+        const toggleIsDone = document.createElement('input');
+        toggleIsDone.setAttribute('name', 'isDone');
+        toggleIsDone.setAttribute('type', 'checkbox');
+        note.isDone && toggleIsDone.setAttribute('checked', 'true');
+        toggleIsDone.addEventListener('click', () => {
+          note.toggleIsDone();
+          this.renderNotes();
+        });
+
+        noteContainer.appendChild(toggleIsDone);
+
+        if (note.isDone) noteContent.classList.add('done');
+      }
+
       noteContainer.appendChild(noteContent);
       this.notesContainer.appendChild(noteContainer);
     });
@@ -95,8 +111,55 @@ export class UI {
     this.projectsContainer.replaceChildren();
   }
 
+  clearDialog() {
+    this.dialog.innerHTML = '';
+  }
+
   createProject() {
     const projectTitle = prompt('Project Name');
     projectManager.createProject(projectTitle);
+    saveProjects(projectManager.projects);
+  }
+
+  createToDoNoteForm() {
+    const toDoNoteForm = document.createElement('form');
+    toDoNoteForm.classList.add('new-note-form');
+    toDoNoteForm.innerHTML = `
+            <h2>New Note</h2>
+            <label for="title">Note Title</label>
+            <input type="text" name="title" id="title" required />
+            <label for="content">Note Content</label>
+            <input type="text" name="content" id="content" required />
+            <label for="dueDate">Due Date</label>
+            <input type="date" name="dueDate" id="dueDate" required />
+            <label for="priority">Select Priority</label>
+            <select name="priority" id="priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+            <div class='buttons'>
+              <button type="submit">Create</button>
+              <button type="button" class="close-note-dialog">Close</button>
+            </div>
+    `;
+    this.dialog.appendChild(toDoNoteForm);
+
+    document.querySelector('.close-note-dialog').addEventListener('click', () => {
+      this.dialog.close();
+    });
+
+    toDoNoteForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = toDoNoteForm.elements.title.value;
+      const content = toDoNoteForm.elements.content.value;
+      const dueDate = new Date(toDoNoteForm.elements.dueDate.value);
+      const priority = toDoNoteForm.elements.priority.value;
+      const note = new ToDoNote(title, content, dueDate, priority);
+      projectManager.projects[this.activeProjectIndex].addNote(note);
+      this.renderNotes();
+      this.dialog.close();
+      saveProjects(projectManager.projects);
+    });
   }
 }
